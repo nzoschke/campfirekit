@@ -22,6 +22,10 @@
         padding: 3px 5px;
         font-size: 100%
       }
+
+      .small { font-size: 50%; }
+
+      table td { padding-bottom: 10px; }
     </style>
 
     <script type="text/javascript">
@@ -31,13 +35,11 @@
         options.phrases.value       = localStorage.phrases || '';
       }
     
-      function saveOptions() {
-        options.save.value = 'Saving...'
+      function saveOptions(e) {
         localStorage.isActivated = options.isActivated.checked;
         localStorage.apiToken    = options.apiToken.value;
         localStorage.phrases     = options.phrases.value;
-        options.save.value = 'Saved.'
-        return false;
+        options.save.value       = 'Settings Saved.'
       }
     </script>
   </head>
@@ -45,25 +47,32 @@
   <body onload="restoreOptions()">
     <h1>
       <img src="64.png" alt="Toast">
-      CampfireKit Demo
+      CampfireKit
     </h1>
     <h2>Options</h2>
+    <div id="status"></div>
     <form id="options">
     <table>
       <tr>
-        <td>Campfire API Token (<a href="https://blossom.campfirenow.com/member/edit">generate</a>)</td>
-        <td><input type="text" name="apiToken" /></td>
-      </tr>
-      <tr>
         <td>Display Notifications?</td>
-        <td><input type="checkbox" name="isActivated" checked></td>
+        <td><input type="checkbox" name="isActivated"></td>
       </tr>
       <tr>
-        <td>Notification Phrases</td>
-        <td><textarea name="phrases"></textarea>
+        <td>
+          Campfire API Token
+          <div class="small">Available at <a href="https://blossom.campfirenow.com/member/edit" target="_blank">campfirenow.com</a></div>
+        </td>
+        <td><input type="text" name="apiToken" size="51" /></td>
       </tr>
       <tr>
-        <td colspan="2"><input id="save" type="submit" value="Save" onclick="saveOptions()" /></td>
+        <td>
+          Notification Phrases
+          <div class="small">Newline delimited, case insensitive regexes</div>
+        </td>
+        <td><textarea name="phrases" rows="10" cols="50"></textarea>
+      </tr>
+      <tr>
+        <td colspan="2"><input id="save" type="submit" value="Save" onclick="saveOptions(); return false;" /></td>
       </tr>
     </table>
     </form>

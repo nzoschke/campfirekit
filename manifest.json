@@ -1,0 +1,17 @@
+{
+  "name": "CampfireKit",
+  "version": "1",
+  "description":
+    "Configurable notifications for Campfire.",
+  "icons": {"16": "16.png", "48": "48.png", "128": "128.png"},
+  "permissions": ["tabs", "notifications"],
+  "options_page": "options.html",
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["https://*.campfirenow.com/room/*"],
+      "css": ["chrome-campfire.css"],
+      "js": ["jquery.min.js", "campfirekit.js"]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+<script>
+
+  function notify(title, body) {
+    var notification = webkitNotifications.createNotification('64.png', title, body);
+    notification.show();
+  }
+
+  chrome.extension.onRequest.addListener(
+    function(request, sender, sendResponse) {
+      if (request.action == 'notify') {
+        notify(request.title, request.body);
+        sendResponse({});
+      }
+      if (request.action == 'getLocalStorage') {
+        sendResponse({localStorage: localStorage});
+      }
+  });
+
+  // Conditionally initialize the options.
+  if (!localStorage.isInitialized) {
+    localStorage.isActivated = true;   // The display activation.
+    localStorage.frequency = 1;        // The display frequency, in minutes.
+    localStorage.isInitialized = true; // The option initialization.
+  }
+
+</script>

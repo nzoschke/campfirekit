@@ -1,7 +1,6 @@
 // globals
 var VISITOR;
 var visitInterval = 10000;
-var backgroundStorage = null;
 var roomCursors = {};
 
 function visit_rooms() {
@@ -9,28 +8,29 @@ function visit_rooms() {
 
   // hack; content script can not access extension localStorage. Get via message passing
   chrome.extension.sendRequest({action: "getLocalStorage"}, function(response) {
-    backgroundStorage = response.localStorage;
+    var backgroundStorage = response.localStorage;
+    var doNotify = true;
+
+    if (!JSON.parse(backgroundStorage.isActivated)) {
+      $('#chrome-campfire').html("Notifications disabled in extension options");
+      doNotify = false;
+    }
 
     var apiToken = backgroundStorage.apiToken;
     if (!apiToken) {
       $('#chrome-campfire').html("No API Token set in extension options");
-      return;
+      doNotify = false;
     }
 
-    if (!backgroundStorage.isActivated) {
-      $('#chrome-campfire').html("Notifications disabled in extension options");
-      return;
-    }
-
-    var phrases = backgroundStorage.phrases.split(',')
+    var phrases = backgroundStorage.phrases.split('\n')
     var phraseRegexes = [];
     for (var i = 0; i < phrases.length; i++) {
       phraseRegexes.push(new RegExp(phrases[i], 'i'));
     }
-    
+
     if (!phraseRegexes) {
       $('#chrome-campfire').html("No phrases set in extensions options");
-      return;
+      doNotify = false;
     }
 
     $('a.chat').each(function () {
@@ -55,6 +55,7 @@ function visit_rooms() {
             numNewMessages += 1;
 
             if (roomCursor.lastId == 0) continue;
+            if (!doNotify) continue;
 
             for (var j = 0; j < phraseRegexes.length; j++) {
               if (message.body && message.body.match(phraseRegexes[j])) {
@@ -69,21 +70,15 @@ function visit_rooms() {
       );
     });
 
-    $('#chrome-campfire').html($('a.chat').length + " rooms pinged at " + (new Date).toString());
-    $('#chrome-campfire').css({'background-color': "#ffff00"});
+    if (doNotify) $('#chrome-campfire').html($('a.chat').length + " rooms pinged at " + (new Date).toString());
   });
 
   VISITOR = setTimeout('visit_rooms()', visitInterval);
 }
 
-$(document).ready(function () {
-  VISITOR = setTimeout('visit_rooms()', visitInterval);
-  $('#Sidebar').append('<div id="chrome-campfire-container"><h3>CampfireKit <a href="#">refresh</a></h3>' +
-                       '<div id="chrome-campfire"><strong>LOADED PLUGIN</strong></div></div>');
-
-  // attach behavior to refresh link
-  $('#chrome-campfire-container h3 a').click(function () {
-    visit_rooms();
-    return false;
-  });
+VISITOR = setTimeout('visit_rooms()', 500);
+$('#Sidebar').append('<div id="chrome-campfire-container"><h3>CampfireKit <a href="#">refresh</a></h3><div id="chrome-campfire"><strong>LOADED PLUGIN</strong></div></div>');
+$('#chrome-campfire-container h3 a').click(function () {
+  visit_rooms();
+  return false;
 });

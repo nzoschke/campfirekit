@@ -1,62 +1,71 @@
-<title>CampfireKit</title>
-<style>
-  /* Clone the look and feel of "chrome://" pages. */
-  body {
-    margin: 10px;
-    font: 84% Arial, sans-serif
-  }
+<html>
+  <head>
+    <title>CampfireKit</title>
 
-  h1 { font-size: 156% }
+    <style>
+      /* Clone the look and feel of "chrome://" pages. */
+      body {
+        margin: 10px;
+        font: 84% Arial, sans-serif
+      }
 
-  h1 img {
-    margin: 1px 5px 0 1px;
-    vertical-align: middle
-  }
+      h1 { font-size: 156% }
 
-  h2 {
-    border-top: 1px solid #9cc2ef;
-    background-color: #ebeff9;
-    padding: 3px 5px;
-    font-size: 100%
-  }
-</style>
-<script>
-  onload = function() {
-    options.isActivated.checked = JSON.parse(localStorage.isActivated);
-    options.apiToken.value      = localStorage.apiToken || '';
-    options.phrases.value       = localStorage.phrases || '';
+      h1 img {
+        margin: 1px 5px 0 1px;
+        vertical-align: middle
+      }
 
-    options.save.onclick = function() {
-      options.save.value = 'Saving...'
-      localStorage.isActivated = options.isActivated.checked;
-      localStorage.apiToken    = options.apiToken.value;
-      localStorage.phrases     = options.phrases.value;
-      options.save.value = 'Saved.'
-      return false;
-    };
-  };
+      h2 {
+        border-top: 1px solid #9cc2ef;
+        background-color: #ebeff9;
+        padding: 3px 5px;
+        font-size: 100%
+      }
+    </style>
 
-</script>
-<h1>
-  <img src="64.png" alt="Toast">
-  CampfireKit Demo
-</h1>
-<h2>Options</h2>
-<table>
-<form id="options">
-  <tr>
-    <td>Campfire API Token (<a href="https://blossom.campfirenow.com/member/edit">generate</a>)</td>
-    <td><input type="text" name="apiToken" /></td>
-  </tr>
-  <tr>
-    <td>Display Notifications?</td>
-    <td><input type="checkbox" name="isActivated" checked></td>
-  </tr>
-  <tr>
-    <td>Notification Phrases</td>
-    <td><textarea name="phrases"></textarea>
-  </tr>
-  <tr>
-    <td colspan="2"><input id="save" type="submit" value="Save" /></td>
-  </tr>
-</form>
+    <script type="text/javascript">
+      function restoreOptions() {
+        options.isActivated.checked = JSON.parse(localStorage.isActivated);
+        options.apiToken.value      = localStorage.apiToken || '';
+        options.phrases.value       = localStorage.phrases || '';
+      }
+    
+      function saveOptions() {
+        options.save.value = 'Saving...'
+        localStorage.isActivated = options.isActivated.checked;
+        localStorage.apiToken    = options.apiToken.value;
+        localStorage.phrases     = options.phrases.value;
+        options.save.value = 'Saved.'
+        return false;
+      }
+    </script>
+  </head>
+
+  <body onload="restoreOptions()">
+    <h1>
+      <img src="64.png" alt="Toast">
+      CampfireKit Demo
+    </h1>
+    <h2>Options</h2>
+    <form id="options">
+    <table>
+      <tr>
+        <td>Campfire API Token (<a href="https://blossom.campfirenow.com/member/edit">generate</a>)</td>
+        <td><input type="text" name="apiToken" /></td>
+      </tr>
+      <tr>
+        <td>Display Notifications?</td>
+        <td><input type="checkbox" name="isActivated" checked></td>
+      </tr>
+      <tr>
+        <td>Notification Phrases</td>
+        <td><textarea name="phrases"></textarea>
+      </tr>
+      <tr>
+        <td colspan="2"><input id="save" type="submit" value="Save" onclick="saveOptions()" /></td>
+      </tr>
+    </table>
+    </form>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-<script>
+<script type="text/javascript">
 
   // only background page can set notifications ; call via message passing
   function notify(title, body) {
@@ -7,6 +7,7 @@
     return {};
   }
 
+  // only background page can get extension localStorage ; call via message passing
   function getLocalStorage() {
     return {localStorage: localStorage}
   }

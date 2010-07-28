@@ -1,26 +1,26 @@
 <script>
 
+  // only background page can set notifications ; call via message passing
   function notify(title, body) {
     var notification = webkitNotifications.createNotification('64.png', title, body);
     notification.show();
+    return {};
+  }
+
+  function getLocalStorage() {
+    return {localStorage: localStorage}
   }
 
   chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
-      if (request.action == 'notify') {
-        notify(request.title, request.body);
-        sendResponse({});
-      }
-      if (request.action == 'getLocalStorage') {
-        sendResponse({localStorage: localStorage});
+      switch(request.action) {
+        case 'getLocalStorage':
+          sendResponse(getLocalStorage());
+          break;
+        case 'notify':
+          sendResponse(notify(request.title, request.body));
+          break;
       }
   });
-
-  // Conditionally initialize the options.
-  if (!localStorage.isInitialized) {
-    localStorage.isActivated = true;   // The display activation.
-    localStorage.frequency = 1;        // The display frequency, in minutes.
-    localStorage.isInitialized = true; // The option initialization.
-  }
 
 </script>

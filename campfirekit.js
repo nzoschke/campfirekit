@@ -4,7 +4,6 @@ var visitInterval = 10000;
 var backgroundStorage = null;
 var roomCursors = {};
 
-
 function visit_rooms() {
   clearTimeout(VISITOR);
 
@@ -35,7 +34,8 @@ function visit_rooms() {
     }
 
     $('a.chat').each(function () {
-      var target = $(this).attr('href');
+      var a = $(this);
+      var target = a.attr('href');
       var matches = target.match('(https?://)(.*:.*@)?(.*)');
       var authenticated_transcript_url = matches[1] + apiToken + ':X@' + matches[3] + '/transcript.json';
 
@@ -58,7 +58,7 @@ function visit_rooms() {
 
             for (var j = 0; j < phraseRegexes.length; j++) {
               if (message.body && message.body.match(phraseRegexes[j])) {
-                chrome.extension.sendRequest({action: "notify", title: target, body: message.body.slice(0,50)});
+                chrome.extension.sendRequest({action: "notify", title: a.attr('title'), body: message.body.slice(0,50)});
                 break;
               }
             }
@@ -84,5 +84,6 @@ $(document).ready(function () {
   // attach behavior to refresh link
   $('#chrome-campfire-container h3 a').click(function () {
     visit_rooms();
+    return false;
   });
 });
